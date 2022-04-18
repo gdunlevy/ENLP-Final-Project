@@ -44,8 +44,8 @@ def savetoCSV(puns,name):
 
     		data[k] = val
 
-    	for change in range(len(indexs)):
-    		indexs[change] = 't_'+str(change)
+    	#for change in range(len(indexs)):
+    	#	indexs[change] = 't_'+str(change)
 
     	df = pd.DataFrame(data, index = indexs)
     	print(df)
