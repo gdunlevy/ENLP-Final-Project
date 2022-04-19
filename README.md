@@ -1,6 +1,11 @@
 # ENLP-Final-Project
 Pun Detection 
 
+can look into using: 
+	- The number of words that are predicted differently if one word ω is masked, using BERT.
+	- 
+
+
 Looking at word similarity with in the sentence. 
 Unsure what to do with the two puns that in quotes.... 
   - "I ate the soap" , Tom lied.
