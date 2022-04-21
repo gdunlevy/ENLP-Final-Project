@@ -8,24 +8,22 @@ can look into using
 	the pun word is usually in second half of the phrase. Get pos of words in the sentence, then look at the second half, get rid of any stop words/punctiation. Then look at the remining words and their defintions? 
 
 
-Looking at word similarity with in the sentence. 
-Unsure what to do with the two puns that in quotes.... 
-  - "I ate the soap" , Tom lied.
-  - "Quick, dive into those reeds!" Tom rushed. 
-
-'I used to be a banker but I lost interest' --> used banker lost interest
-	
-	banker is the subject
-	
-	check similarity of other words against the subject
-		highest similarity is INTEREST (0.41) 
+Homographic Puns: 
+	these are puns that are the same word but different meanings. 
 		
-	
-'When the church nought gas for the barbecue, proceeds went from sacred to the propane.' --> church bought gas annual barbecue proceeds went sacred propan
-	
-	church is the subject
-	
-	check similarity of other words against the subject
-		highest similarity is PROPANE (0.41) 
+		Look into PoS and then look at the defintions and can elminate words that have only 1. 
+		Can get rid of stop words in this case. 
+		
+
+Hetergraphic Puns: 
+	these are puns that sound similar. 
+		
+		Can look into PoS but it might not be helpful 
+		
+		can also look ar definitions 
+		
+		word similarity would work
+		
+		can look at sense of words -- see if there is something that looks for similar sounding words????
 
 
