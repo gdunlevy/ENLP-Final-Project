@@ -1,11 +1,57 @@
 import xml.etree.ElementTree as ET
 from pprint import pprint
 import csv
-import os
+import os, re
 import pandas as pd
 
-def parseXML(xmlfile):
-	mytree = ET.parse(xmlfile)
+
+
+def parseXML(rows,name): 
+
+	print(rows)
+	s = []
+	d = {}
+	l = []
+	i = 0
+	
+	#word_index = []
+	for row in rows:
+		h = ''
+		textopen = re.search("<text id",row)
+		textclose = re.search("</text>",row)
+		sent_id = re.search("<text id=\"[\w]+[\d]+\"",row)
+
+		word = (re.search("\>(.*?)\<",row))
+
+		if textopen:
+			s.append(1)
+			i+=1
+		if sent_id: 
+			sent_id = re.search("<text id=\"[\w]+[\d]+\"",row).group(0)
+			sentence_index = re.search("[\w]+[\d]", sent_id).group(0)
+			#print(sentence_index)
+		if s and word:
+			
+			word = (re.search("\>(.*?)\<",row)).group(1)
+			l.append(word)
+
+		if textclose:
+			s.pop()
+	
+			d[sentence_index] = l
+			l = []
+
+
+	df = pd.DataFrame(d.items(),columns = ['index','Sentence'])
+	for index, row in df.iterrows(): 
+		for word in row['Sentence']:
+			print(word)
+
+	df.to_csv('semeval2017_task7/data/trial/'+name+'puns.csv')
+
+
+def to_dict(f,name): 
+	mytree = ET.parse(f)
 	myroot = mytree.getroot()
 
 	puns = []
@@ -21,41 +67,16 @@ def parseXML(xmlfile):
 			idd = child.attrib['id']
 
 			dict1[item.attrib['id']][idd] = child.text.encode('utf8')
+		with open('semeval2017_task7/data/trial/dictionary_'+name+'.csv', 'a') as f:
+			for key in dict1.keys():
+				f.write("%s,%s\n"%(key,dict1[key]))
+
 		puns.append(dict1)
 
-	return puns
-
-def savetoCSV(puns,name):
-  
-    # specifying the fields for csv file
-    fields = []
-
-    for i in puns: 
-    	for k in i.keys():
-    		fields.append(k)
-    	for item in i.values(): 
-    		val = []
-    		indexs = []
-    		data = {}
-
-    		for key, value in item.items(): 
-    			indexs.append(key)
-    			val.append(value.decode())
-
-    		data[k] = val
-
-    	#for change in range(len(indexs)):
-    	#	indexs[change] = 't_'+str(change)
-
-    	df = pd.DataFrame(data, index = indexs)
-    	print(df)
-
-    	df.to_csv('semeval2017_task7/data/trial/'+name+'puns_'+k+'.csv')
-    	
-
-#def read():
-
-
+	
+def get_rows(f):
+	for rows in open(f, "r"):
+		yield rows
 def main():
     # parse xml file
     directory = 'semeval2017_task7/data/trial'
@@ -65,12 +86,16 @@ def main():
 	    if os.path.isfile(f):
 	    	if f.endswith((".xml")):
 	    		name = os.path.splitext(filename)[0]
-	    		print(f)
-	    		puns = parseXML(f)
-	    		savetoCSV(puns,name)
-		      
+
+	    		
+	    		rows = get_rows(f)
+	    		puns = parseXML(rows,name)
+	    		#to_dict(f,name)
+
+	 		      
       
 if __name__ == "__main__":
   
     # calling main function
     main()
+

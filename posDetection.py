@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim.models import KeyedVectors,Word2Vec
 from sklearn.metrics.pairwise import cosine_similarity
+from nltk.corpus import wordnet as wn
 
 
 sp = spacy.load('en_core_web_sm')
@@ -18,58 +19,75 @@ lemma = WordNetLemmatizer()
 
 def read(f): 
 	df = pd.read_csv(f)
-
-	sentence = df.iloc[:, 1].tolist()
-	for i in range(len(sentence)): 
-		sentence[i] = sentence[i].lower()
-
+	
+	for index, row in df.iterrows():
+		full_sentence = row['Sentence']
 
 
-	sentence = " ".join(sentence)
+		stop_free = " ".join([i for i in full_sentence.lower().split() if i not in stop])
+
+		# remove any stop words present
+		punc_free = ''.join(ch for ch in stop_free if ch not in exclude)  
+
+		# remove punctuations + normalize the text
+		#normalized = " ".join(lemma.lemmatize(word,'v') for word in punc_free.split())
+		normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split()) 
+
+		#return (normalized)
 
 
-	stop_free = " ".join([i for i in sentence.lower().split() if i not in stop])
-
-	# remove any stop words present
-	punc_free = ''.join(ch for ch in stop_free if ch not in exclude)  
-
-	# remove punctuations + normalize the text
-	normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split()) 
-	print(normalized)
-
-	return (normalized)
+		return full_sentence
 
 def pos(sentence): 
 
 	dictionary=PyDictionary()
 	sen = sp(sentence)
 
+	'''
 	sub_toks = [tok for tok in sen if (tok.dep_ == "nsubj") ]
-
 	sen2 = sp(str(sub_toks[0]))
-	print(sen2)
-
 
 	for i in sen:
-		print("Similarity:", sen2.similarity(i))
-		
-	'''
-	'I used to be a banker but I lost interest --> used banker lost interest 
-		banker is the subject 
-	check similarity of other words against the subject
-		highest similarity is INTEREST (0.41) 
-		
+		print(i)
+		for j in sen: 
+			print('Similarity with ',i,' and ',j, ': ',i.path_similarity(j))
+			#print('Similarity with ',i,' and ',j, ': ',i.similarity(j))
+			#print("Similarity:", sen2.similarity(i))
+
 	
-	'When the church nought gas for the barbecue, proceeds went from sacred to the propane. --> church bought gas annual barbecue proceeds went sacred propan
-		church is the subject 
-	check similarity of other words against the subject
-		highest similarity is PROPANE (0.41) 
-		
-		
-	I am not sure what to do about the puns with quotes.... 
+
 	'''
 
+	print(sentence)
+	for i in range(len(sentence)):
+		print(sentence[i])
+		pprint(wn.synsets(sentence[i])) 
+	exit()
+	'''
+	for word in sen:
+		print(word)
 
+		print(f'{word.text:{12}} {word.pos_:{10}} {word.tag_:{8}} {spacy.explain(word.tag_)}')
+		print(word.pos_)
+
+		
+			#wn.synsets(str(word), word.tag_)
+		#if word.pos_ == 'DET' or word.pos_ == 'CCONJ' or word.pos_ == 'PUNCT' or word.pos_ =='PART': 
+		#definition = dictionary.meaning(str(word))
+		#print(definition)
+	'''
+
+	'''
+	can split up definitions based off of the PoS tag given 
+	some will have to be based off the tags (when it is an AUX)
+		VB --> verb 
+	can ignore DET and CCONJ and PUNCT
+
+
+	check for multiple definitions of 
+
+	
+	'''
 def main():
     # parse xml file
     directory = 'semeval2017_task7/data/trial'
@@ -77,7 +95,7 @@ def main():
     for filename in os.listdir(directory):
 	    f = os.path.join(directory, filename)
 	    if os.path.isfile(f):
-	    	if f.endswith((".csv")):
+	    	if f.endswith(("puns.csv")):
 	    		#name = os.path.splitext(filename)[0]
 	    		print(f)
 	    		sentence = read(f)
