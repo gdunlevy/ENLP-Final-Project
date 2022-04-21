@@ -1,5 +1,5 @@
 # ENLP-Final-Project
-Pun Detection 
+Pun Detection: https://alt.qcri.org/semeval2017/task7/
 
 can look into using
 
