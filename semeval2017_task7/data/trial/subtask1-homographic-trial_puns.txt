@@ -1,0 +1,1 @@
+{'t_1': ['I', 'used', 'to', 'be', 'a', 'banker', 'but', 'I', 'lost', 'interest', '.'], 't_2': ['This', 'sentence', 'contains', 'no', 'pun', '.'], 't_3': ['"', 'Quick', ',', 'dive', 'into', 'those', 'reeds', '!', '"', 'Tom', 'rushed', '.']}

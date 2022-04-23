@@ -39,9 +39,20 @@ def parseXML(rows,name):
 			s.pop()
 	
 			d[sentence_index] = l
+			print(d)
+			print('...')
+			f = open('semeval2017_task7/data/trial/'+name+'_puns.txt', 'w')
+			f.write( str(d) )
+			f.close()
+			#for key, value in d.items():
+			#	file1.write('%s:%s\n' % (key, value))
 			l = []
 
 
+	
+	#file1 = open('emeval2017_task7/data/trial/'+name+'_puns.txt', 'w')
+
+	'''
 	df = pd.DataFrame(d.items(),columns = ['index','Sentence'])
 	for index, row in df.iterrows(): 
 		for word in row['Sentence']:
@@ -49,7 +60,7 @@ def parseXML(rows,name):
 
 	df.to_csv('semeval2017_task7/data/trial/'+name+'puns.csv')
 
-
+	'''
 def to_dict(f,name): 
 	mytree = ET.parse(f)
 	myroot = mytree.getroot()
