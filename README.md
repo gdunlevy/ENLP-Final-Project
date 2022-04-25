@@ -27,6 +27,10 @@ can look into using
 			- **Next step** look at the other words in the sentence 
 				This will allow us to get a better read at whether or not there is a pun 
 				How do we do it?
+			- Removed punct, stop words, and normalized verbs. Looked at remaining words and got PoS. Found synsets for each word. 
+			If there were more than 1 synset that equaled the word, then it moved on to getting the defintion for the word (based on PoS)
+			If there was more than 1 defintion for the word in the PoS then made it so there was a pun in the sentence. 
+				accuracy: 0.7342222222222222
 	Hetergraphic Puns: 
 		these are puns that sound similar. 
 
