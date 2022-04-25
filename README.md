@@ -21,7 +21,7 @@ Homographic Puns:
 				precision: 
 				recall:
 				f1: 
-				accuracy: 
+				accuracy:  0.5613333333333334
 		
 		- **Next step** look at the other words in the sentence 
 			This will allow us to get a better read at whether or not there is a pun 
