@@ -23,51 +23,19 @@ exclude = set(string.punctuation)
 
 def heterographic(subtask1_heterographic,name,model):
 
-	print(subtask1_heterographic)
-	for i in subtask1_heterographic: 
-		if i.endswith("puns.txt"): 
-			print(i)
-			with open(i, 'r') as f:
-				data = f.read()
-				dictionary = ast.literal_eval(data)
-				f.close()
-	
-	for key, value in dictionary.items(): 
-		not_word = []
-		words = []
-		for v in value: 
-			words.append(v)
-			if v.lower() not in exclude and v.lower() not in stop: 
-				not_word.append(v)
-		not_word = ' '.join(not_word)
-
-		
-
-		tokens = sp(not_word)
-		sub_toks = [tok for tok in tokens if (tok.dep_ == "nsubj") ]
-		sen2 = sp(str(sub_toks[0]))
-		for i in tokens:
-			print(sen2," ", sen2.similarity(i)," ",i )
-
-
 	'''
 	not sure what to do here yet
-	this is for puns for words that sounds similar (profane --> propane)
-
-
-	look at similarity of words?
-	look at definintions?
 
 
 	need ideas for this 
 	'''
 
 def homographic(subtask1_homographic,name,model):
-	print(subtask1_homographic)
+	#print(subtask1_homographic)
 
 	for i in subtask1_homographic: 
 		if i.endswith("puns.txt"): 
-			print(i)
+			#print(i)
 			with open(i, 'r') as f:
 				data = f.read()
 				dictionary = ast.literal_eval(data)
@@ -84,8 +52,16 @@ def homographic(subtask1_homographic,name,model):
 
 		#print(not_word)
 		#get_pos(words)
+
+		'''
+
+		NOTE: RUNNING get_pos_synset TO SEE IF THERE ARE BETTER RESULTS
+
+		'''
 			
-		answers = get_pos_synset(not_word,key,answers)
+		answers = get_pos_synset(words, not_word,key,answers) 
+		#answers = get_pos_last_word(words, not_word,key,answers)
+		
 
 	file = open('semeval2017_task7/data/'+model+'/'+name+'_predicted.txt', 'w')
 	
@@ -94,29 +70,28 @@ def homographic(subtask1_homographic,name,model):
 	file.close()
 
 
-def get_pos_synset(pun,key,answers):
-	#print(Search.perfectHomophones('Jonathan'))
+def get_pos_synset(full_sent,pun,key,answers):
 
-	
-	pun_sent = ' '.join(pun)
+	pun_sent = ' '.join(full_sent)
 	lemma = WordNetLemmatizer() 
-	normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
+	#normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
 
-	print(normalized)
+	#print(normalized)
 	dictionary=PyDictionary()
-	sen = sp(normalized)
+	full_sen_sp = sp(pun_sent)
+	#sen = sp(normalized)
+	
 
 	print('KEY # ', key)
 
 	#Take last word, and check to see if there are more than one def. Then for the pos if the pos has more than one
 	count_def = 0 
 	
-	for w in sen:
+	for w in full_sen_sp:
 		lemma_list = []
 		definition = dictionary.meaning(str(w))
 		
 		print(w.pos_)
-		
 		print(w)
 		if w.pos_ == 'VERB':
 			print('VERB')
@@ -135,6 +110,7 @@ def get_pos_synset(pun,key,answers):
 			count_def = 0
 	
 		print(pos)
+	
 
 		if pos != 'none':
 			for synset in wn.synsets(str(w), pos):
@@ -143,7 +119,7 @@ def get_pos_synset(pun,key,answers):
 
 			counts = Counter(lemma_list)
 			count_w = counts[str(w)]
-			print(count_w)
+			
 
 			if count_w > 1:
 				if definition != None: 
@@ -167,9 +143,8 @@ def get_pos_synset(pun,key,answers):
 			else:
 				count_def = 0
 
-		print(count_def)
 
-
+		print("HERE------------> ", count_def)
 		if count_def > 1: 
 			answers.append(str(key)+'\t1')
 			break
@@ -178,17 +153,14 @@ def get_pos_synset(pun,key,answers):
 		answers.append(str(key)+'\t0')
 				
 
-	print("HERE------------> ", len(answers))
+	
 
 	#print(answers)
 
 	return answers
 
-def get_pos(pun,key,answers):
-	
-	#print(Search.perfectHomophones('Jonathan'))
-
-	
+def get_pos_last_word(pun,key,answers):
+		
 	pun_sent = ' '.join(pun)
 	dictionary=PyDictionary()
 	sen = sp(pun_sent)
