@@ -18,6 +18,8 @@ from nltk.stem.wordnet import WordNetLemmatizer
 sp = spacy.load('en_core_web_sm')
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
+dictionary=PyDictionary()
+
 
 
 
@@ -52,15 +54,9 @@ def homographic(subtask1_homographic,name,model):
 
 		#print(not_word)
 		#get_pos(words)
-
-		'''
-
-		NOTE: RUNNING get_pos_synset TO SEE IF THERE ARE BETTER RESULTS
-
-		'''
-			
-		answers = get_pos_synset(words, not_word,key,answers) 
-		#answers = get_pos_last_word(words, not_word,key,answers)
+		
+		answers = dic(words, not_word,key,answers) 	
+		#answers = get_pos_synset(words, not_word,key,answers) 
 		
 
 	file = open('semeval2017_task7/data/'+model+'/'+name+'_predicted.txt', 'w')
@@ -69,50 +65,41 @@ def homographic(subtask1_homographic,name,model):
 		file.write(element+'\n')
 	file.close()
 
+def dic(full_sent,pun,key,answers):
 
-def get_pos_synset(full_sent,pun,key,answers):
-
+	
 	pun_sent = ' '.join(full_sent)
 	lemma = WordNetLemmatizer() 
-	#normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
+	normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
 
 	#print(normalized)
-	dictionary=PyDictionary()
-	full_sen_sp = sp(pun_sent)
-	#sen = sp(normalized)
-	
+	sen = sp(normalized)
+	#sen = sp(pun_sent)
 
 	print('KEY # ', key)
+	#print(full_sent)
 
-	#Take last word, and check to see if there are more than one def. Then for the pos if the pos has more than one
-	count_def = 0 
+	check_pun = []
 	
-	for w in full_sen_sp:
+	for w in sen:
 		lemma_list = []
-		definition = dictionary.meaning(str(w))
+		count_def = 0
+		#definition = dictionary.meaning(str(w))
 		
-		print(w.pos_)
-		print(w)
 		if w.pos_ == 'VERB':
-			print('VERB')
 			pos = 'v'
 		elif w.pos_ == 'ADV' or w.pos_ == 'ADP' or w.pos_ == 'INTJ':
-			print('ADVERB')
 			pos='r'
 		elif w.pos_ == 'NOUN' or w.pos_ == 'PROPN' or w.pos_ == 'PRON':
-			print('NOUN')
 			pos='n'
 		elif w.pos_ == 'ADJ':
-			print('ADJ')
 			pos='a'
 		else: 
 			pos = 'none'
-			count_def = 0
-	
-		print(pos)
 	
 
 		if pos != 'none':
+			#print(w)
 			for synset in wn.synsets(str(w), pos):
 				for lemma in synset.lemmas():
 				    lemma_list.append(str(lemma.name()))
@@ -121,108 +108,108 @@ def get_pos_synset(full_sent,pun,key,answers):
 			count_w = counts[str(w)]
 			
 
-			if count_w > 1:
-				if definition != None: 
+			if count_w > 5:
+				definition = dictionary.meaning(str(w))
+				if definition != None:
 					if len(definition) > 1:
-						if pos == 'v':
+						if pos == 'v': 
 							if 'Verb' in definition.keys():
 								count_def = len(definition['Verb'])
-						if pos == 'n':
+							else:
+								count_def = 0
+						elif pos == 'n': 
 							if 'Noun' in definition.keys():
 								count_def = len(definition['Noun'])
-						if pos == 'a':
+							else:
+								count_def = 0
+						elif pos == 'a': 
 							if 'Adjective' in definition.keys():
 								count_def = len(definition['Adjective'])
-						if pos == 'Verb':
+							else:
+								count_def = 0
+						elif pos == 'r': 
 							if 'Adverb' in definition.keys():
 								count_def = len(definition['Adverb'])
-					else:
-						count_def = 0
+							else:
+								count_def = 0
 				else:
 					count_def = 0
-			else:
-				count_def = 0
 
 
-		print("HERE------------> ", count_def)
 		if count_def > 1: 
+			check_pun.append(1)
 			answers.append(str(key)+'\t1')
+			print(str(key)+'\t1')
 			break
-			
-	else: 
-		answers.append(str(key)+'\t0')
-				
+		else:
+			check_pun.append(0)
+
 
 	
-
-	#print(answers)
+	if 1 not in check_pun: 
+		answers.append(str(key)+'\t0')
+		print(str(key)+'\t0')
+		
 
 	return answers
 
-def get_pos_last_word(pun,key,answers):
-		
-	pun_sent = ' '.join(pun)
-	dictionary=PyDictionary()
-	sen = sp(pun_sent)
+
+def get_pos_synset(full_sent,pun,key,answers):
+
+	pun_sent = ' '.join(full_sent)
+	lemma = WordNetLemmatizer() 
+	normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
+
+	#print(normalized)
+	sen = sp(normalized)
+	#sen = sp(pun_sent)
 
 	print('KEY # ', key)
+	#print(full_sent)
 
-	#Take last word, and check to see if there are more than one def. Then for the pos if the pos has more than one
-
-	last_word = sen[-1]
-	definition = dictionary.meaning(str(sen[-1]))
+	check_pun = []
+	
 	for w in sen:
-		if definition != None: 
-			if len(definition) > 1:
-				#print(f'{last_word.text:{12}} {last_word.pos_:{10}} {last_word.tag_:{8}} {spacy.explain(last_word.tag_)}')
-				print(w.pos_)
-				print(w)
-				if w.pos_ == 'VERB':
-					if 'Verb' in definition.keys():
-						count_def = len(definition['Verb'])
-						print(wn.synsets(str(w), pos='v'))
-					else:
-						count_def = 0
-					
-				if w.pos_ == 'ADV' or w.pos_ == 'ADP' or w.pos_ == 'INTJ':
-					if 'Adverb' in definition.keys():
-						count_def = len(definition['Adverb'])
-						print(wn.synsets(str(w), pos='b'))
-					else:
-						count_def = 0
+		lemma_list = []
+		#definition = dictionary.meaning(str(w))
 		
-				if w.pos_ == 'NOUN' or w.pos_ == 'PROPN' or w.pos_ == 'PRON':
-					if 'Noun' in definition.keys():
-						count_def = len(definition['Noun'])
-						print(wn.synsets(str(w), pos='n'))
-					else:
-						count_def = 0
-					
-				if w.pos_ == 'ADJ':
-					if 'Adjective' in definition.keys():
-						count_def = len(definition['Adjective'])
-						print(wn.synsets(str(w), pos='a'))
-					else:
-						count_def = 0
-				if w.pos_ =='NUM':
-					count_def = 0
-				if w.pos_ =='SCONJ':
-					count_def = 0
-
-				if count_def > 1: 
-					answers.append(str(key)+'\t1')
-				else: 
-					answers.append(str(key)+'\t0')
-			else: 
-				answers.append(str(key)+'\t0')
-
+		if w.pos_ == 'VERB':
+			pos = 'v'
+		elif w.pos_ == 'ADV' or w.pos_ == 'ADP' or w.pos_ == 'INTJ':
+			pos='r'
+		elif w.pos_ == 'NOUN' or w.pos_ == 'PROPN' or w.pos_ == 'PRON':
+			pos='n'
+		elif w.pos_ == 'ADJ':
+			pos='a'
 		else: 
-			answers.append(str(key)+'\t0')
+			pos = 'none'
+	
 
+		if pos != 'none':
+			#print(w)
+			for synset in wn.synsets(str(w), pos):
+				for lemma in synset.lemmas():
+				    lemma_list.append(str(lemma.name()))
+
+			counts = Counter(lemma_list)
+			count_w = counts[str(w)]
 			
-			
-	print("HERE------------> ", len(answers))
-	exit()
+
+			if count_w > 5:
+				check_pun.append(1)
+				answers.append(str(key)+'\t1')
+				print(str(key)+'\t1')
+				break
+			else:
+				check_pun.append(0)
+
+
+	
+	if 1 not in check_pun: 
+		answers.append(str(key)+'\t0')
+		print(str(key)+'\t0')
+		
+
 	return answers
 
 
@@ -236,8 +223,6 @@ def compare(directory):
 		    		predicted = f
 	    		if f.endswith("gold"):
 		    		gold = f
-
-
 
 	precision,recall,f1,accuracy= getCorrect(gold, predicted)
 	print("Precision: ",precision)
@@ -254,6 +239,7 @@ def getCorrect(gold, predicted):
 	with open(predicted, 'r') as f:
 		predicted_answers = f.readlines()
 	f.close()
+
 
 	count = 0  
 	for i in range(len(gold_answers)):
