@@ -40,12 +40,7 @@ def homographic(subtask1_homographic,name,model):
 			if v.lower() not in exclude and v.lower() not in stop: 
 				not_word.append(v)
 
-		#print(not_word)
-		#get_pos(words)
-		
-		#answers = dic(words, not_word,key,answers) 	
-		#answers = get_pos_synset(words, not_word,key,answers) 
-		answers = get_pos_last_word(not_word,key,answers)
+		answers = get_pos_synset(words, not_word,key,answers) 
 		
 
 	file = open('semeval2017_task7/data/'+model+'/'+name+'_predicted.txt', 'w')
