@@ -1,46 +1,50 @@
 # ENLP-Final-Project
 Pun Detection: https://alt.qcri.org/semeval2017/task7/
 
-can look into using
+This project was slipt into two subtask. The first subtask was to determine if a sentence had a pun in it. The second was to determine which word was the pun in the sentence. 
+There are two types of puns used: Homographic and Heterographic. 
+Homographic --> words that have different meanings but same pronuciation 
+	ex: interest
+Heterographic --> words that have similar sounding pronunciations
+	ex: profane vs. propane
 
-	The number of words that are predicted differently if one word ω is masked, using BERT.
+**PARSING CODE**
+
+	parse_data_test.py and parse_data_trial.py
 	
-	the pun word is usually in second half of the phrase. Get pos of words in the sentence, then look at the second half, get rid of any stop words/punctiation. Then look at the remining words and their defintions? 
-
+	These two files take in the XML files provided by the contest conductors. 
+	Because the XML files come pre-labeled, we wanted to fnd a way to make sure we 
+	kept those btu also had an easily readable file. 
+	We read in the sentences and put them into a dictionary. The key is the sentence tag
+	and each word is their own value. We did a dictionary over a dataframe because the 
+	dataframe would parse each letter of the word, so when trying to loop through a cell
+	you would get it by letter, not the full word. 
+	
 **SUBTASK 1 ----> PUN DETECTION**
-
-	Homographic Puns: 
-		these are puns that are the same word but different meanings. 
-
-			Look into PoS and then look at the defintions and can elminate words that have only 1. 
-			Can get rid of stop words in this case. 
-
-			- Take last word, if definition for the PoS it was tagged as has more than one meaning. 
-				If it has more than one meaning --> there is a Pun 
-				If not (or the defintion doesnt exist) --> no pun 
-					total correct: 
-					precision: 
-					recall:
-					f1: 
-					accuracy:  0.5613333333333334
-
-			- **Next step** look at the other words in the sentence 
-				This will allow us to get a better read at whether or not there is a pun 
-				How do we do it?
-			- Removed punct, stop words, and normalized verbs. Looked at remaining words and got PoS. Found synsets for each word. 
-			If there were more than 1 synset that equaled the word, then it moved on to getting the defintion for the word (based on PoS)
-			If there was more than 1 defintion for the word in the PoS then made it so there was a pun in the sentence. 
-				accuracy: 0.7342222222222222
-	Hetergraphic Puns: 
-		these are puns that sound similar. 
-
-			Can look into PoS but it might not be helpful 
-
-			can also look ar definitions 
-		
-		word similarity would work
-		
-		can look at sense of words -- see if there is something that looks for similar sounding words????
+	
+	subtask1.py
+	
+	This file contains the code to preforming some baseline methods for task 1,
+	specifically for **HOMOGRAPHIC**. 
+	The methods that can be run in this file are: last word, dictionary defintions, 
+	and synsets. 
+	
+	HOMOGRAPHIC:
+	- Last word: This is determined by the specific POS definitions of the last words 
+	in the sentences. If the last word definition has more than one entry, 
+	then we can say there is a pun in that sentence. 
+		ex: Weeds (NOUN) --> {'Noun': ['any plant that crowds out 
+		cultivated plants', 'a black band worn by a man (on the arm or hat', 
+		'street names for marijuana', 'a black garment (dress'], 
+		'Verb': ['clear of weeds']} 
+	- Dictionary Defitions: This is basically the same as the last word concept but
+	it is for every word in the sentence
+	-Synset: In this one we use the POS of the word to give us the list of synsets of 
+	the word in the sentence. If any word has from the sentence appears in its synset 
+	list more than 5 times, then there is a pun in the the sentence. 
+	
+	HETEROGRAPHIC:
+	
 		
 **SUBTASK 2 ----> WHICH WORD IS THE PUN**
 	
