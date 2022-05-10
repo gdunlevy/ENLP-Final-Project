@@ -2,7 +2,7 @@ import pandas as pd
 import os, ast, string, filecmp
 import spacy
 import argparse
-from statistics import median 
+import random 
 
 
 from PyDictionary import PyDictionary
@@ -15,6 +15,7 @@ from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_sc
 from SoundsLike.SoundsLike import Search
 from collections import Counter
 from nltk.stem.wordnet import WordNetLemmatizer
+import statistics
 
 sp = spacy.load('en_core_web_sm')
 stop = set(stopwords.words('english'))
@@ -37,7 +38,7 @@ def homographic(subtask2_homographic,name,model):
 		for v in value: 
 			words.append(v.lower())
 			if v.lower() not in exclude: #and v.lower() not in stop: 
-				not_word.append(v)
+				not_word.append(v.lower())
 
 		#answers = last_word(not_word,key,answers)
 		answers = get_pos_synset(words,not_word,key,answers)
@@ -81,16 +82,13 @@ def get_pos_synset(full_sent,pun,key,answers):
 		
 	pun_sent = ' '.join(full_sent)
 	lemma = WordNetLemmatizer() 
-	#normalized = " ".join(lemma.lemmatize(word,'v') for word in pun_sent.split()) 
-
-	#print(normalized)
-	#sen = sp(normalized)
 	sen = sp(pun_sent)
 
 	print('KEY # ', key)
 	#print(full_sent)
 
 	check_pun = {}
+	check= []
 	
 	for w in sen:
 		lemma_list = []

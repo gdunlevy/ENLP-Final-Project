@@ -20,18 +20,6 @@ stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
 dictionary=PyDictionary()
 
-
-
-
-def heterographic(subtask1_heterographic,name,model):
-
-	'''
-	not sure what to do here yet
-
-
-	need ideas for this 
-	'''
-
 def homographic(subtask1_homographic,name,model):
 	#print(subtask1_homographic)
 
@@ -55,8 +43,9 @@ def homographic(subtask1_homographic,name,model):
 		#print(not_word)
 		#get_pos(words)
 		
-		answers = dic(words, not_word,key,answers) 	
+		#answers = dic(words, not_word,key,answers) 	
 		#answers = get_pos_synset(words, not_word,key,answers) 
+		answers = get_pos_last_word(not_word,key,answers)
 		
 
 	file = open('semeval2017_task7/data/'+model+'/'+name+'_predicted.txt', 'w')
@@ -153,7 +142,6 @@ def dic(full_sent,pun,key,answers):
 
 	return answers
 
-
 def get_pos_synset(full_sent,pun,key,answers):
 
 	pun_sent = ' '.join(full_sent)
@@ -208,8 +196,58 @@ def get_pos_synset(full_sent,pun,key,answers):
 	if 1 not in check_pun: 
 		answers.append(str(key)+'\t0')
 		print(str(key)+'\t0')
-		
 
+	return answers
+
+def get_pos_last_word(pun,key,answers):
+		
+	pun_sent = ' '.join(pun)
+	dictionary=PyDictionary()
+	sen = sp(pun_sent)
+
+	print('KEY # ', key)
+
+	#Take last word, and check to see if there are more than one def. Then for the pos if the pos has more than one
+	count_def = 0
+	last_word = sen[-1]
+	definition = dictionary.meaning(str(last_word))
+	if definition != None: 
+		print(len(definition))
+		print(definition)
+		if len(definition) > 1:
+			#print(f'{last_word.text:{12}} {last_word.pos_:{10}} {last_word.tag_:{8}} {spacy.explain(last_word.tag_)}')
+			print(last_word.pos_)
+			print(last_word)
+			
+			if last_word.pos_ == 'VERB':
+				if 'Verb' in definition.keys():
+					count_def = len(definition['Verb'])
+					#print(wn.synsets(str(w), pos='v'))
+				
+			elif last_word.pos_ == 'ADV' or last_word.pos_ == 'ADP' or last_word.pos_ == 'INTJ':
+				if 'Adverb' in definition.keys():
+					count_def = len(definition['Adverb'])
+					#print(wn.synsets(str(w), pos='b'))
+	
+			elif last_word.pos_ == 'NOUN' or last_word.pos_ == 'PROPN' or last_word.pos_ == 'PRON':
+				if 'Noun' in definition.keys():
+					count_def = len(definition['Noun'])
+				
+			elif last_word.pos_ == 'ADJ':
+				if 'Adjective' in definition.keys():
+					count_def = len(definition['Adjective'])
+
+
+
+	if count_def > 1: 
+		answers.append(str(key)+'\t1')
+		print(str(key)+'\t1')
+
+	else: 
+		answers.append(str(key)+'\t0')
+		print(str(key)+'\t0')
+
+		
 	return answers
 
 
@@ -240,7 +278,7 @@ def getCorrect(gold, predicted):
 		predicted_answers = f.readlines()
 	f.close()
 
-
+	print(gold_answers)
 	count = 0  
 	for i in range(len(gold_answers)):
 		if gold_answers[i] == predicted_answers[i]: 
@@ -263,8 +301,6 @@ def main(args):
 
 	model = args.model
 	directory = 'semeval2017_task7/data/'+model
-
-
 
 	subtask1 = {}
 	hetero = []
