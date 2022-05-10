@@ -22,47 +22,53 @@ Heterographic --> words that have similar sounding pronunciations
 	
 **SUBTASK 1 ----> PUN DETECTION**
 	
-	subtask1.py
-	
-	This file contains the code to preforming some baseline methods for task 1,
-	specifically for **HOMOGRAPHIC**. 
-	The methods that can be run in this file are: last word, dictionary defintions, 
-	and synsets. 
+	This file contains the code to preforming some baseline methods for task 1.
+	Each method is in their own file. 
 	
 	HOMOGRAPHIC:
-	- Last word: This is determined by the specific POS definitions of the last words 
-	in the sentences. If the last word definition has more than one entry, 
-	then we can say there is a pun in that sentence. 
-		ex: Weeds (NOUN) --> {'Noun': ['any plant that crowds out 
-		cultivated plants', 'a black band worn by a man (on the arm or hat', 
-		'street names for marijuana', 'a black garment (dress'], 
-		'Verb': ['clear of weeds']} 
-	- Dictionary Defitions: This is basically the same as the last word concept but
-	it is for every word in the sentence
-	-Synset: In this one we use the POS of the word to give us the list of synsets of 
-	the word in the sentence. If any word has from the sentence appears in its synset 
-	list more than 5 times, then there is a pun in the the sentence. 
+	last_word.py
+		- Last word: This is determined by the specific POS definitions of the last words 
+		in the sentences. If the last word definition has more than one entry, 
+		then we can say there is a pun in that sentence. 
+			ex: Weeds (NOUN) --> {'Noun': ['any plant that crowds out 
+			cultivated plants', 'a black band worn by a man (on the arm or hat', 
+			'street names for marijuana', 'a black garment (dress'], 
+			'Verb': ['clear of weeds']} 
+	dictionary_def.py
+		- Dictionary Defitions: This is basically the same as the last word concept but
+		it is for every word in the sentence
+	synset.py
+		-Synset: In this one we use the POS of the word to give us the list of synsets of 
+		the word in the sentence. If any word has from the sentence appears in its synset 
+		list more than 5 times, then there is a pun in the the sentence. 
+		
+	returns: hom_sentence# 1 OR hom_sentence# 0
 	
 	HETEROGRAPHIC:
+
+	
+	
+	returns: het_sentence# 1 OR het_sentence# 0
 	
 		
 **SUBTASK 2 ----> WHICH WORD IS THE PUN**
 	
-	Homographic Puns: 
-		these are puns that are the same word but different meanings. 
+	This file contains the code to preforming some baseline methods for task 2. 
+	In this task all sentences that are not puns have been removed.
+	Each method is in their own file. 
+	
+	HOMOGRAPHIC:
+	last_word.py
+		- Last word: this takes the last word and determines it is the pun. 
+	synset.py
+		-Synset: In this one we use the POS of the word to give us the list of synsets of 
+		the word in the sentence. Get the word with the most synsets that are equal to the
+		word, and check if it is over 6. If it is then the answer is the word. Otherwise, 
+		use the last word. 
+	
+	returns: hom_sentence#_word#
+	
+	HETEROGRAPHIC:
 
-
-			- Can say it is the last word just to see the accuracy we get for that
-
-			- how can we find the word in the sentence that is spelt the same but has two totally different meanings 
-				- maybe check to see if words have two different PoS and/or multiple definitions for the same PoS
-
-
-	Hetergraphic Puns: 
-		these are puns that sound similar. 
-
-			can look at sense of words -- see if there is something that looks for similar sounding words????
-
-		wordnet sense? not sure
-
+	returns: het_sentence#_word#
 
