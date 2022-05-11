@@ -77,6 +77,7 @@ maxLength = 50
 
 x = pad_sequences(encoded_sent,maxlen=maxLength,padding='pre',truncating= 'post', value= 0.0)
 # splitting data into train and test
+# test from 0.6 - 0.8
 fraction = 0.8
 limit = int(fraction*len(x))
 x_train = x[:limit]
