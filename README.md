@@ -42,10 +42,15 @@ Heterographic --> words that have similar sounding pronunciations
 		the word in the sentence. If any word has from the sentence appears in its synset 
 		list more than 5 times, then there is a pun in the the sentence. 
 		
+	homo_cnn.py
+		- **NEED BREIF EXPLANATION**
+		
 	returns: hom_sentence# 1 OR hom_sentence# 0
 	
 	HETEROGRAPHIC:
-
+	
+	hetero_cnn.py
+		- **NEED BREIF EXPLANATION**
 	
 	
 	returns: het_sentence# 1 OR het_sentence# 0
