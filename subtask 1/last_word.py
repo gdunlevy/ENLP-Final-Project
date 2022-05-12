@@ -54,7 +54,9 @@ def get_pos_last_word(pun,key,answers):
 		
 	pun_sent = ' '.join(pun)
 	dictionary=PyDictionary()
+
 	sen = sp(pun_sent)
+
 
 	print('KEY # ', key)
 
@@ -63,11 +65,8 @@ def get_pos_last_word(pun,key,answers):
 	last_word = sen[-1]
 	definition = dictionary.meaning(str(last_word))
 	if definition != None: 
-		print(len(definition))
-		print(definition)
 		if len(definition) > 1:
 			#print(f'{last_word.text:{12}} {last_word.pos_:{10}} {last_word.tag_:{8}} {spacy.explain(last_word.tag_)}')
-			print(last_word.pos_)
 			print(last_word)
 			
 			if last_word.pos_ == 'VERB':
@@ -98,8 +97,9 @@ def get_pos_last_word(pun,key,answers):
 		answers.append(str(key)+'\t0')
 		print(str(key)+'\t0')
 
-		
+	print('Here ---> ', len(answers))
 	return answers
+
 
 
 def compare(directory): 
