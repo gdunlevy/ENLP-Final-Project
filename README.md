@@ -63,6 +63,8 @@ Heterographic --> words that have similar sounding pronunciations
 	Each method is in their own file. 
 	
 	HOMOGRAPHIC:
+	ENLP_Testing.ipynb
+		- Run cells in order in Google Colab. Sections explain which method is being tested where (GPT-2 or BERT).
 	last_word.py
 		- Last word: this takes the last word and determines it is the pun. 
 	synset.py
@@ -74,6 +76,8 @@ Heterographic --> words that have similar sounding pronunciations
 	returns: hom_sentence#_word#
 	
 	HETEROGRAPHIC:
+	ENLP_Testing.ipynb
+		- Run cells in order in Google Colab. Sections explain which method is being tested where (GPT-2 or BERT).
 
 	returns: het_sentence#_word#
 
